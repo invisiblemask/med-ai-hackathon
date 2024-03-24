@@ -19,7 +19,7 @@ export default function GetStarted() {
         </h1>
       </div>
       <div className="flex flex-col flex-1 p-0 lg:p-10 lg:items-center lg:justify-center min-h-screen">
-        <div className="flex flex-col gap-10 my-auto">
+        <div className="flex flex-col gap-10  mt-28">
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-normal flex flex-col gap-1">
               Welcome to MedAi. <span>Sign in to get started.</span>
@@ -28,7 +28,7 @@ export default function GetStarted() {
               Enter your details to proceed further
             </p>
           </div>
-          <div className="flex flex-col gap-4 lg:w-[414px]">
+          <div className="flex flex-col gap-8 lg:w-[414px]">
             <Button
               as={Link}
               href="/connect-wallet"
@@ -45,7 +45,7 @@ export default function GetStarted() {
               size="lg"
               radius="lg"
               className="cursor-pointer">
-              Google sign in
+              Sign in
             </Button>
           </div>
         </div>

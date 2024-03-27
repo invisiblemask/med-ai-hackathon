@@ -1,3 +1,4 @@
 import LoginComponent from "./LoginComponent";
+import RegisterComponent from "./RegisterComponent";
 
-export {LoginComponent}
+export { LoginComponent, RegisterComponent }

@@ -9,22 +9,26 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 
-const schema = yup.object().shape({
-    email: yup.string().required("Email is required").email(),
-    password: yup.string().required("Password is required").min(8)
-});
-
 type FormField = {
+    fullname: string
     email: string
     password: string
 }
 
-export default function LoginComponent() {
+const schema = yup.object().shape({
+    fullname: yup.string().required("Fullname is required"),
+    email: yup.string().required("Email is required").email(),
+    password: yup.string().required("Password is required").min(8)
+});
+
+
+export default function RegisterComponent() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const { handleSubmit, formState: { errors: error }, control } = useForm<FormField>({
         defaultValues: {
+            fullname: "",
             email: "",
             password: "",
         },
@@ -68,7 +72,7 @@ export default function LoginComponent() {
                 <div className="flex flex-col gap-10 mt-28">
                     <div className="flex flex-col gap-2">
                         <h1 className="text-3xl font-normal flex flex-col gap-1">
-                            Welcome to MedAi. <span>Sign in to get started.</span>
+                            Welcome to MedAi. <span>Register to get started.</span>
                         </h1>
                         <p className="text-sm text-[#8181A5]">
                             Enter your details to proceed further
@@ -77,6 +81,28 @@ export default function LoginComponent() {
 
                     <div className="flex flex-col gap-4 lg:w-[414px]">
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
+                            <Controller
+                                name="fullname"
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="flex flex-col gap-2">
+                                        <Input
+                                            label="Fullname :"
+                                            placeholder="john doe"
+                                            type="text"
+                                            labelPlacement="outside"
+                                            classNames={{
+                                                inputWrapper: "h-[50px]",
+                                                label: "text-base"
+                                            }}
+                                            {...field}
+                                        />
+                                        <div className="text-[#FF4B5A]">
+                                            {error && <span>{error.fullname?.message}</span>}
+                                        </div>
+                                    </div>
+                                )}
+                            />
                             <Controller
                                 name="email"
                                 control={control}
@@ -119,11 +145,6 @@ export default function LoginComponent() {
 
                                     )}
                                 />
-                                <Link
-                                    href="/forgot-password"
-                                    className="bg-gradient-to-br from-teal-500 to-teal-400 bg-clip-text text-transparent w-fit">
-                                    Forgot Password?
-                                </Link>
                             </div>
 
                             <Button
@@ -135,7 +156,7 @@ export default function LoginComponent() {
                             </Button>
                         </form>
                         <div className="flex flex-row items-center justify-center gap-2 text-gray-500">
-                            Want to register you business? <Link href="/register" className="text-[#131313]">Get started</Link>
+                            Already have an account? <Link href="/login" className="text-[#131313]">Login</Link>
                         </div>
                     </div>
                 </div>

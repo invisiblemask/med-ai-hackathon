@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { Button, Input } from "@nextui-org/react";
 import Image from "next/image";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm, SubmitHandler } from "react-hook-form";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";

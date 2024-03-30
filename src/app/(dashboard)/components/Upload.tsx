@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function Upload() {
     return (
-        <div className='flex flex-col items-center justify-center gap-4 mt-48'>
+        <div className='flex flex-col items-center justify-center gap-4'>
             <Image src="/icons/upload-file.svg" alt='uploader' width={1200} height={900} className='w-36 h-44' />
             <h1 className="text-bold text-[28px] text-[#333742]">Upload images</h1>
             <div className='flex flex-row gap-2 text-gray-500'>

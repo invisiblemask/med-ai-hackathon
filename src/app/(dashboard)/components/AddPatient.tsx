@@ -21,7 +21,7 @@ export default function AddPatient() {
 			<Button onPress={onOpen} color="primary" endContent={<PlusIcon />}>
 				Add New Patient
 			</Button>
-			<Modal size="4xl" isOpen={isOpen} onOpenChange={onOpenChange}  scrollBehavior={scrollBehavior}>
+			<Modal size="4xl" isOpen={isOpen} onOpenChange={onOpenChange}  scrollBehavior="outside">
 				<ModalContent>
 					
 							<ModalHeader className="flex flex-col gap-1">

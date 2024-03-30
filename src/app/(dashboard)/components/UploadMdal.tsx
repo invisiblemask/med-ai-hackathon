@@ -30,7 +30,7 @@ export default function UploadModal() {
 				size="4xl"
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
-				scrollBehavior={scrollBehavior}
+				scrollBehavior="outside"
 			>
 				<ModalContent>
 					<ModalHeader className="flex flex-col gap-1">

@@ -1,29 +1,33 @@
 "use client";
 
 import { useSDK } from "@metamask/sdk-react";
-import { Button } from "@nextui-org/react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import RegisterUserInfo from "./modal/register-user-info";
 
 
 
 export default function page() {
   const router = useRouter();
   const [account, setAccount] = useState<any>();
-    const { sdk, connected, connecting, provider, chainId } = useSDK();
+  const { sdk, connected, connecting, provider, chainId } = useSDK();
 
-    const connect = async () => {
-        try {
-            const accounts: any = await sdk?.connect();
-            setAccount(accounts?.[0]);
-        } catch (err) {
-            console.warn("failed to connect..", err);
-        }
-    };
+  const connect = async () => {
+    try {
+      const accounts: any = await sdk?.connect();
+      setAccount(accounts?.[0]);
+      if(!account){
+        <RegisterUserInfo isOpen={true} account={account}/>
+      }
+    } catch (err) {
+      console.warn("failed to connect..", err);
+    }
+  };
 
-    console.log(account)
+  console.log(account)
   return (
     <div className="flex flex-col lg:flex-row m-4">
       <div className="bg-primary rounded-[20px] min-h-screen w-full lg:flex flex-col hidden items-center justify-center flex-1 gap-5">

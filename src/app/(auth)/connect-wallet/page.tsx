@@ -5,8 +5,7 @@ import { Button, useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import RegisterUserInfo from "./modal/register-user-info";
+import React, { useEffect, useState } from "react";
 
 
 
@@ -19,17 +18,25 @@ export default function page() {
     try {
       const accounts: any = await sdk?.connect();
       setAccount(accounts?.[0]);
-      if(!account){
-        <RegisterUserInfo isOpen={true} account={account}/>
-      }
     } catch (err) {
       console.warn("failed to connect..", err);
     }
   };
 
+useEffect(()=>{
+  if(account){
+    // This is not possible
+  router.push("/update-user")
+  console.log("first")
+  //  I NEED TO DO THIS 
+  // router.push("/modal")
+  }
+}, [account])
+
   console.log(account)
   return (
     <div className="flex flex-col lg:flex-row m-4">
+      <Link href={"/update-user"}>TR7kl</Link>
       <div className="bg-primary rounded-[20px] min-h-screen w-full lg:flex flex-col hidden items-center justify-center flex-1 gap-5">
         <Image
           src="/images/wallet-page-image.svg"

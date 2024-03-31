@@ -9,6 +9,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { post } from "../../../backend_services/api_services";
+import React from "react";
 
 type authContextType = {
   user: { [key: string]: any } | null;

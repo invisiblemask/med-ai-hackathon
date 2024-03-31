@@ -39,7 +39,7 @@ export default function UploadModal() {
 					<ModalBody>
 						<Upload />
 					</ModalBody>
-					<ModalFooter></ModalFooter>
+					{/* <ModalFooter></ModalFooter> */}
 				</ModalContent>
 			</Modal>
 		</>

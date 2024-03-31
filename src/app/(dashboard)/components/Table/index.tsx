@@ -43,6 +43,16 @@ const INITIAL_VISIBLE_COLUMNS = [
 	"actions",
 ];
 
+interface Item {
+    id: number;
+    patient: string;
+    modality: string;
+    bodyPart: string;
+    status: string;
+    studyDate: string;
+    dateReceived: string;
+  }
+
 export default function PatientTable() {
 	const [filterValue, setFilterValue] = React.useState("");
 	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
@@ -60,7 +70,7 @@ export default function PatientTable() {
 	const hasSearchFilter = Boolean(filterValue);
 
 	const headerColumns = React.useMemo(() => {
-		if (visibleColumns === "all") return columns;
+		if (visibleColumns.has("all")) return columns;
 
 		return columns.filter((column) =>
 			Array.from(visibleColumns).includes(column.uid),
@@ -72,7 +82,7 @@ export default function PatientTable() {
 
 		if (hasSearchFilter) {
 			filteredUsers = filteredUsers.filter((user) =>
-				user.name.toLowerCase().includes(filterValue.toLowerCase()),
+				user.patient.toLowerCase().includes(filterValue.toLowerCase()),
 			);
 		}
 		if (
@@ -97,9 +107,13 @@ export default function PatientTable() {
 	}, [page, filteredItems, rowsPerPage]);
 
 	const sortedItems = React.useMemo(() => {
+        type ItemKey = keyof Item;
 		return [...items].sort((a, b) => {
-			const first = a[sortDescriptor.column];
-			const second = b[sortDescriptor.column];
+            const columnKey: ItemKey = "patient" as const;
+
+			const first = a[columnKey];
+    const second = b[columnKey];
+    
 			const cmp = first < second ? -1 : first > second ? 1 : 0;
 
 			return sortDescriptor.direction === "descending" ? -cmp : cmp;

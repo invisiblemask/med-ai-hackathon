@@ -14,16 +14,11 @@ const schema = yup.object().shape({
     password: yup.string().required("Password is required").min(8)
 });
 
-type FormField = {
-    email: string
-    password: string
-}
-
 export default function LoginComponent() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const { handleSubmit, formState: { errors: error }, control } = useForm<FormField>({
+    const { handleSubmit, formState: { errors: error }, control } = useForm({
         defaultValues: {
             email: "",
             password: "",
@@ -31,7 +26,7 @@ export default function LoginComponent() {
         resolver: yupResolver(schema)
     })
 
-    const onSubmit: SubmitHandler<FormField> = async (data: { email: string, password: string }) => {
+    const onSubmit = async (data: { email: string, password: string }) => {
         setIsLoading(true)
 
         router.push("/dashboard")

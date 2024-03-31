@@ -9,12 +9,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 
-type FormField = {
-    fullname: string
-    email: string
-    password: string
-}
-
 const schema = yup.object().shape({
     fullname: yup.string().required("Fullname is required"),
     email: yup.string().required("Email is required").email(),
@@ -26,7 +20,7 @@ export default function RegisterComponent() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const { handleSubmit, formState: { errors: error }, control } = useForm<FormField>({
+    const { handleSubmit, formState: { errors: error }, control } = useForm({
         defaultValues: {
             fullname: "",
             email: "",
@@ -35,7 +29,7 @@ export default function RegisterComponent() {
         resolver: yupResolver(schema)
     })
 
-    const onSubmit: SubmitHandler<FormField> = async (data: { email: string, password: string }) => {
+    const onSubmit = async (data: { email: string, password: string }) => {
         setIsLoading(true)
 
         router.push("/dashboard")

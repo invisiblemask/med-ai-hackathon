@@ -7,14 +7,6 @@ import { useState } from "react";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import * as yup from "yup";
 
-type FormField = {
-	name: string;
-	modality: string;
-	bodyPart: string;
-	studyDate: string;
-	receivedDate: string;
-};
-
 const schema = yup.object().shape({
 	name: yup.string().required("Patient name is required"),
 	modality: yup.string().required("Modality is required"),
@@ -30,7 +22,7 @@ export default function AddPatientForm() {
 		handleSubmit,
 		formState: { errors: error },
 		control,
-	} = useForm<FormField>({
+	} = useForm({
 		defaultValues: {
 			name: "",
 			modality: "",
@@ -41,7 +33,7 @@ export default function AddPatientForm() {
 		resolver: yupResolver(schema),
 	});
 
-	const onSubmit: SubmitHandler<FormField> = async (data: {
+	const onSubmit = async (data: {
 		modality: string;
 		bodyPart: string;
 	}) => {

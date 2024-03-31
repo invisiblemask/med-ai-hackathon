@@ -6,8 +6,8 @@ export const links = [
     activeIcon: "/icons/SquaresFourPrimary.svg"
   },
   {
-    name: "Worklist",
-    href: "/worklist",
+    name: "Patients",
+    href: "/patients",
     icon: "/icons/worklist.svg",
     activeIcon: "/icons/worklist-primary.svg"
   },

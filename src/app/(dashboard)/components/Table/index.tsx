@@ -13,6 +13,7 @@ import {
 	DropdownTrigger,
 	Input,
 	Pagination,
+	SortDescriptor,
 	Table,
 	TableBody,
 	TableCell,
@@ -61,9 +62,13 @@ export default function PatientTable() {
 	);
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
-	const [sortDescriptor, setSortDescriptor] = React.useState({
+	// const [sortDescriptor, setSortDescriptor] = React.useState({
+	// 	column: "age",
+	// 	direction: "ascending",
+	// });
+	const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor | undefined>({
 		column: "age",
-		direction: "ascending",
+		direction: null
 	});
 	const [page, setPage] = React.useState(1);
 
@@ -226,7 +231,8 @@ export default function PatientTable() {
 								closeOnSelect={false}
 								selectedKeys={statusFilter}
 								selectionMode="multiple"
-								onSelectionChange={setStatusFilter}
+								onSelectionChange={(selectedKeys:any) => setStatusFilter(selectedKeys)}
+
 							>
 								{statusOptions.map((status) => (
 									<DropdownItem key={status.uid} className="capitalize">
@@ -250,7 +256,7 @@ export default function PatientTable() {
 								closeOnSelect={false}
 								selectedKeys={visibleColumns}
 								selectionMode="multiple"
-								onSelectionChange={setVisibleColumns}
+								onSelectionChange={(selectedKeys:any) => setVisibleColumns(selectedKeys)}
 							>
 								{columns.map((column) => (
 									<DropdownItem key={column.uid} className="capitalize">
@@ -329,7 +335,7 @@ export default function PatientTable() {
 			sortDescriptor={sortDescriptor}
 			topContent={topContent}
 			topContentPlacement="outside"
-			onSelectionChange={setSelectedKeys}
+			onSelectionChange={(selectedKeys:any) => setSelectedKeys(selectedKeys)}
 			onSortChange={setSortDescriptor}
 		>
 			<TableHeader columns={headerColumns}>

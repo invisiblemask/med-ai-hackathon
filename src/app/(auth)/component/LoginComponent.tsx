@@ -8,6 +8,8 @@ import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
+import { useAuth } from "@/app/contexts/AuthContext";
+import { toast } from "sonner";
 
 const schema = yup.object().shape({
     email: yup.string().required("Email is required").email(),
@@ -16,7 +18,7 @@ const schema = yup.object().shape({
 
 export default function LoginComponent() {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const {login, isLoading} = useAuth();
 
     const { handleSubmit, formState: { errors: error }, control } = useForm({
         defaultValues: {
@@ -27,10 +29,15 @@ export default function LoginComponent() {
     })
 
     const onSubmit = async (data: { email: string, password: string }) => {
-        setIsLoading(true)
 
-        router.push("/dashboard")
-        console.log(data)
+        const { message, status } = await login(data)
+        
+        if(status === 201){
+            router.push("/dashboard")
+            toast.success(message)
+        }else{
+            toast.error(message)
+        }
     }
 
     return (

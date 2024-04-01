@@ -6,13 +6,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 
 
 
 export default function page() {
   const router = useRouter();
   const [account, setAccount] = useState<any>();
-  const { sdk, connected, connecting, provider, chainId } = useSDK();
+  const { sdk, connected } = useSDK();
+  const {walletLogin, updateAddress} = useAuth()
 
   const connect = async () => {
     try {
@@ -22,21 +24,26 @@ export default function page() {
       console.warn("failed to connect..", err);
     }
   };
+  
 
 useEffect(()=>{
-  if(account){
-    // This is not possible
-  router.push("/update-user")
-  console.log("first")
-  //  I NEED TO DO THIS 
-  // router.push("/modal")
+  if(connected){
+    connect()
+    if(account) {
+      const data = {address: account}
+      const check = walletLogin(data)
+      if (check){
+        router.push("/dashboard")
+      } else {
+        router.push("/update-user")
+      }
+    } 
   }
-}, [account])
+}, [account, connected])
 
-  console.log(account)
+  console.log(account, connected)
   return (
     <div className="flex flex-col lg:flex-row m-4">
-      <Link href={"/update-user"}>TR7kl</Link>
       <div className="bg-primary rounded-[20px] min-h-screen w-full lg:flex flex-col hidden items-center justify-center flex-1 gap-5">
         <Image
           src="/images/wallet-page-image.svg"

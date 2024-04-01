@@ -23,7 +23,7 @@ export function Modal({ children }: { children: React.ReactNode }) {
       <div className="fixed inset-0 z-50 bg-white/5 backdrop-blur">
         <dialog
           ref={dialogRef}
-          className="bg-white rounded-lg lg:max-w-4xl w-full lg:w-auto left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%]"
+          className="bg-white rounded-lg lg:max-w-4xl flex flex-col items-center w-full lg:w-auto left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%]"
           onClose={onDismiss}
         >
           {children}

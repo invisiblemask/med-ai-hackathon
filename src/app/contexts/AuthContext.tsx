@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import { post } from "../../../backend_services/api_services";
+import { authPost, post } from "../../../backend_services/api_services";
 import React from "react";
 
 type authContextType = {
@@ -47,22 +47,23 @@ export function AuthProvider({ children }: Props) {
   const [user, setUser] = useState<{ [key: string]: any } | null>(null);
   const [isLoading, setisLoading] = useState<boolean | undefined>(false);
 
-  useEffect(() => {
-    const checkIfUserExists = () => {
-      const res = localStorage.getItem("user");
+  // useEffect(() => {
+  //   const checkIfUserExists = () => {
+  //     const res = localStorage.getItem("user");
+  //     console.log(res)
 
-      if (res !== null && res.length > 0) {
+  //     if (res !== null && res.length > 0) {
 
-        const val = JSON.parse(res)
-        setUser(val.user)
-      } else {
-        setUser(null);
-      }
+  //       const val = JSON.parse(res)
+  //       setUser(val.user)
+  //     } else {
+  //       setUser(null);
+  //     }
 
-    };
+  //   };
 
-    return checkIfUserExists();
-  }, []);
+  //   return checkIfUserExists();
+  // }, []);
 
   const register = async (data: { email: string; password: string, name: string }) => {
     setisLoading(true);
@@ -71,10 +72,10 @@ export function AuthProvider({ children }: Props) {
         url: "auth/user/register",
         req: { ...data },
       });
-      localStorage.setItem("user", JSON.stringify(res.data));
-      setUser(res.data.name);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("token", JSON.stringify(res.data.token));
+      setUser(res.data.user);
       return {
-        res: res.data?.name,
         message: res.data.message,
         status: res.status,
       };
@@ -97,10 +98,16 @@ export function AuthProvider({ children }: Props) {
         url: "auth/user/login",
         req: { ...data },
       });
-      localStorage.setItem("user", JSON.stringify(res.data));
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("token", JSON.stringify(res.data.token));
       setUser(res.data.user);
+      return {
+        message: res.data.message,
+        status: res.status,
+      };
 
     } catch (error: any) {
+      console.log(error)
       return {
         message: error.response?.data.message,
         res: null,
@@ -112,12 +119,16 @@ export function AuthProvider({ children }: Props) {
   };
 
   const walletLogin = async (data: { address: string;}) => {
-    setisLoading(true);
+    // setisLoading(true);
+    console.log("this")
     try {
       const res: any = await post({
         url: "auth/user/wallet-login",
         req: { ...data },
       });
+
+      console.log(res)
+
       
     } catch (error: any) {
       return {
@@ -126,7 +137,7 @@ export function AuthProvider({ children }: Props) {
         status: error.response?.status,
       };
     } finally {
-      setisLoading(false)
+      // setisLoading(false)
     }
   };
 
@@ -152,7 +163,7 @@ export function AuthProvider({ children }: Props) {
   const logout = () => {
     router.push("/");
     setUser(null);
-    localStorage.removeItem("user")
+    localStorage.clear()
   };
 
   const value = {

@@ -1,8 +1,8 @@
 "use client";
 
+import { useAuth } from "@/app/contexts/AuthContext";
 import { ChevronDownIcon } from "@/icons/ChevronDownIcon";
 import { SearchIcon } from "@/icons/SearchIcon";
-import { VerticalDotsIcon } from "@/icons/VerticalDotsIcon";
 import { capitalize } from "@/lib/utils";
 import {
 	Button,
@@ -20,16 +20,14 @@ import {
 	TableColumn,
 	TableHeader,
 	TableRow,
-	Tooltip,
 } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
-import AddPatient from "../AddPatient";
-import { columns, statusOptions, users } from "./data";
 import Image from "next/image";
-import UploadModal from "../UploadMdal";
-import { authGet, get } from "../../../../../backend_services/api_services";
+import React, { useState } from "react";
 import { toast } from "sonner";
-import { useAuth } from "@/app/contexts/AuthContext";
+import { get } from "../../../../../backend_services/api_services";
+import AddPatient from "../AddPatient";
+import UploadModal from "../UploadMdal";
+import { columns, statusOptions } from "./data";
 
 const statusColorMap = {
 	active: "success",
@@ -58,8 +56,8 @@ interface Item {
 }
 
 export default function PatientTable() {
-	const {token} = useAuth()
-	const [data,setData] =  useState([])
+	const { token } = useAuth()
+	const [data, setData] = useState([])
 	const [filterValue, setFilterValue] = React.useState("");
 	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
 	const [visibleColumns, setVisibleColumns] = React.useState(
@@ -68,7 +66,7 @@ export default function PatientTable() {
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-	const [sortDescriptor, setSortDescriptor] = React.useState < SortDescriptor | undefined > ({
+	const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor | undefined>({
 		column: "age",
 		direction: null
 	});
@@ -76,19 +74,16 @@ export default function PatientTable() {
 
 	React.useEffect(() => {
 		const getData = async () => {
-		  try {
-			const res: any = await get("/patient");
-			setData(res.data);
-		  } catch (error: any) {
-			console.log("error", error);
-			toast.error(error.response?.data?.message);
-		  }
+			try {
+				const res: any = await get("/patient");
+				setData(res.data);
+			} catch (error: any) {
+				console.log("error", error);
+				toast.error(error.response?.data?.message);
+			}
 		};
 		getData();
-	  }, []);
-
-	  console.log(data);
-	
+	}, []);
 
 	const hasSearchFilter = Boolean(filterValue);
 

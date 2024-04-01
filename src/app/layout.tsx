@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "sonner";
+import React, { Suspense } from "react";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,21 +15,28 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
 	children,
+	modal
 }: Readonly<{
 	children: React.ReactNode;
+	modal: React.ReactNode;
 }>) {
 	return (
 		<html lang="en">
 			<body className={inter.className} suppressHydrationWarning>
 				<Providers>
+					<AuthProvider>
 					<Toaster
 						richColors
 						duration={5000}
 						closeButton
 						position="top-center"
 					/>
-					{children}
+					<Suspense fallback={<>loading...</>}>
+						{children} {modal}
+					</Suspense>
+					</AuthProvider>
 				</Providers>
+				<div id="modal-root" />
 			</body>
 		</html>
 	);

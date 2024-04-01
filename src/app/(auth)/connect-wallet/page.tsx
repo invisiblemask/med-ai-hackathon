@@ -1,13 +1,47 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import { useSDK } from "@metamask/sdk-react";
+import { Button, useDisclosure } from "@nextui-org/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+
+
 
 export default function page() {
   const router = useRouter();
+  const [account, setAccount] = useState<any>();
+  const { sdk, connected } = useSDK();
+  const {walletLogin, updateAddress} = useAuth()
+
+  const connect = async () => {
+    try {
+      const accounts: any = await sdk?.connect();
+      setAccount(accounts?.[0]);
+    } catch (err) {
+      console.warn("failed to connect..", err);
+    }
+  };
+  
+
+useEffect(()=>{
+  if(connected){
+    connect()
+    if(account) {
+      const data = {address: account}
+      const check = walletLogin(data)
+      if (check){
+        router.push("/dashboard")
+      } else {
+        router.push("/update-user")
+      }
+    } 
+  }
+}, [account, connected])
+
+  console.log(account, connected)
   return (
     <div className="flex flex-col lg:flex-row m-4">
       <div className="bg-primary rounded-[20px] min-h-screen w-full lg:flex flex-col hidden items-center justify-center flex-1 gap-5">
@@ -45,7 +79,7 @@ export default function page() {
             </p>
           </div>
           <div className="flex flex-col gap-8 lg:w-96">
-            <div className="bg-[#F4F6F9] h-[76px] flex flex-row items-center justify-between px-8 rounded-lg cursor-pointer">
+            <div className="bg-[#F4F6F9] h-[76px] flex flex-row items-center justify-between px-8 rounded-lg cursor-pointer" onClick={connect}>
               <div className="flex flex-row gap-4 items-center bg-gradient-to-br from-teal-500 to-teal-400 bg-clip-text text-transparent">
                 <Image
                   src="/icons/MetaMask_Fox 1.svg"

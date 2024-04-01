@@ -8,9 +8,11 @@ import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
+import { useAuth } from "@/app/contexts/AuthContext";
+import { toast } from "sonner";
 
 const schema = yup.object().shape({
-    fullname: yup.string().required("Fullname is required"),
+    name: yup.string().required("name is required"),
     email: yup.string().required("Email is required").email(),
     password: yup.string().required("Password is required").min(8)
 });
@@ -18,22 +20,27 @@ const schema = yup.object().shape({
 
 export default function RegisterComponent() {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const {register, isLoading} = useAuth();
 
     const { handleSubmit, formState: { errors: error }, control } = useForm({
         defaultValues: {
-            fullname: "",
+            name: "",
             email: "",
             password: "",
         },
         resolver: yupResolver(schema)
     })
 
-    const onSubmit = async (data: { email: string, password: string }) => {
-        setIsLoading(true)
+    const onSubmit = async (data: { email: string, password: string, name: string }) => {
 
-        router.push("/dashboard")
-        console.log(data)
+        const { message, status } = await register(data)
+
+        if(status === 201){
+            router.push("/dashboard")
+            toast.success(message)
+        }else{
+            toast.error(message)
+        }
     }
 
     return (
@@ -76,12 +83,12 @@ export default function RegisterComponent() {
                     <div className="flex flex-col gap-4 lg:w-[414px]">
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-10">
                             <Controller
-                                name="fullname"
+                                name="name"
                                 control={control}
                                 render={({ field }) => (
                                     <div className="flex flex-col gap-2">
                                         <Input
-                                            label="Fullname :"
+                                            label="name :"
                                             placeholder="john doe"
                                             type="text"
                                             labelPlacement="outside"
@@ -92,7 +99,7 @@ export default function RegisterComponent() {
                                             {...field}
                                         />
                                         <div className="text-[#FF4B5A]">
-                                            {error && <span>{error.fullname?.message}</span>}
+                                            {error && <span>{error.name?.message}</span>}
                                         </div>
                                     </div>
                                 )}

@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../contexts/AuthContext";
+import { toast } from "sonner";
 
 
 const schema = yup.object().shape({
@@ -16,7 +17,7 @@ const schema = yup.object().shape({
 
 
 export const UpdateComp = () => {
-    const {isLoading} = useAuth()
+    const {isLoading, updateName} = useAuth()
     const router = useRouter();
     
     const { handleSubmit, formState: { errors: error }, control } = useForm({
@@ -28,9 +29,14 @@ export const UpdateComp = () => {
 
     const onSubmit = async (data: { name: string,}) => {
 
-
-        router.push("/dashboard")
-        console.log(data)
+        const { message, status } = await updateName(data)
+        
+        if(status === 201){
+            router.push("/dashboard")
+            toast.success(message)
+        }else{
+            toast.error(message)
+        }
     }
 
   return (
@@ -40,7 +46,7 @@ export const UpdateComp = () => {
             Welcome to MedAi. <span>Update User Info to continue.</span>
         </h1>
         <p className="text-sm text-[#8181A5]">
-            Enter your details to proceed further
+            Enter your name to proceed further
         </p>
     </div>
 
@@ -53,7 +59,7 @@ export const UpdateComp = () => {
                     <div className="flex flex-col gap-2">
                         <Input
                             label="Name :"
-                            placeholder="johndoe@example.com"
+                            placeholder="John Doe"
                             type="text"
                             labelPlacement="outside"
                             classNames={{

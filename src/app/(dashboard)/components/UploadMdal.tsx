@@ -39,7 +39,9 @@ export default function UploadModal() {
 					<ModalBody>
 						<Upload />
 					</ModalBody>
-					{/* <ModalFooter></ModalFooter> */}
+					{/* <ModalFooter>
+						<Button color="primary">Analyse</Button>
+					</ModalFooter> */}
 				</ModalContent>
 			</Modal>
 		</>

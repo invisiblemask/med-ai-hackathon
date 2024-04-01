@@ -1,15 +1,14 @@
 "use client";
 
-import * as yup from "yup";
+import { useAuth } from "@/app/contexts/AuthContext";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Input } from "@nextui-org/react";
 import Image from "next/image";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { FormEvent, useState } from "react";
-import { useAuth } from "@/app/contexts/AuthContext";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import * as yup from "yup";
 
 const schema = yup.object().shape({
     name: yup.string().required("name is required"),
@@ -88,7 +87,7 @@ export default function RegisterComponent() {
                                 render={({ field }) => (
                                     <div className="flex flex-col gap-2">
                                         <Input
-                                            label="name :"
+                                            label="Name :"
                                             placeholder="john doe"
                                             type="text"
                                             labelPlacement="outside"

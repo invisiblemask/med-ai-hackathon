@@ -22,11 +22,14 @@ import {
 	TableRow,
 	Tooltip,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AddPatient from "../AddPatient";
 import { columns, statusOptions, users } from "./data";
 import Image from "next/image";
 import UploadModal from "../UploadMdal";
+import { authGet, get } from "../../../../../backend_services/api_services";
+import { toast } from "sonner";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 const statusColorMap = {
 	active: "success",
@@ -45,16 +48,18 @@ const INITIAL_VISIBLE_COLUMNS = [
 ];
 
 interface Item {
-    id: number;
-    patient: string;
-    modality: string;
-    bodyPart: string;
-    status: string;
-    studyDate: string;
-    dateReceived: string;
-  }
+	id: number;
+	patient: string;
+	modality: string;
+	bodyPart: string;
+	status: string;
+	studyDate: string;
+	dateReceived: string;
+}
 
 export default function PatientTable() {
+	const {token} = useAuth()
+	const [data,setData] =  useState([])
 	const [filterValue, setFilterValue] = React.useState("");
 	const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
 	const [visibleColumns, setVisibleColumns] = React.useState(
@@ -62,15 +67,28 @@ export default function PatientTable() {
 	);
 	const [statusFilter, setStatusFilter] = React.useState("all");
 	const [rowsPerPage, setRowsPerPage] = React.useState(10);
-	// const [sortDescriptor, setSortDescriptor] = React.useState({
-	// 	column: "age",
-	// 	direction: "ascending",
-	// });
-	const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor | undefined>({
+
+	const [sortDescriptor, setSortDescriptor] = React.useState < SortDescriptor | undefined > ({
 		column: "age",
 		direction: null
 	});
 	const [page, setPage] = React.useState(1);
+
+	React.useEffect(() => {
+		const getData = async () => {
+		  try {
+			const res: any = await get("/patient");
+			setData(res.data);
+		  } catch (error: any) {
+			console.log("error", error);
+			toast.error(error.response?.data?.message);
+		  }
+		};
+		getData();
+	  }, []);
+
+	  console.log(data);
+	
 
 	const hasSearchFilter = Boolean(filterValue);
 
@@ -83,7 +101,7 @@ export default function PatientTable() {
 	}, [visibleColumns]);
 
 	const filteredItems = React.useMemo(() => {
-		let filteredUsers = [...users];
+		let filteredUsers = [...data];
 
 		if (hasSearchFilter) {
 			filteredUsers = filteredUsers.filter((user) =>
@@ -112,13 +130,13 @@ export default function PatientTable() {
 	}, [page, filteredItems, rowsPerPage]);
 
 	const sortedItems = React.useMemo(() => {
-        type ItemKey = keyof Item;
+		type ItemKey = keyof Item;
 		return [...items].sort((a, b) => {
-            const columnKey: ItemKey = "patient" as const;
+			const columnKey: ItemKey = "patient" as const;
 
 			const first = a[columnKey];
-    const second = b[columnKey];
-    
+			const second = b[columnKey];
+
 			const cmp = first < second ? -1 : first > second ? 1 : 0;
 
 			return sortDescriptor.direction === "descending" ? -cmp : cmp;
@@ -152,18 +170,15 @@ export default function PatientTable() {
 			case "actions":
 				return (
 					<div className="relative flex flex-row items-center gap-4">
-						<Tooltip content="Upload Image" showArrow>
-							<UploadModal />
-						</Tooltip>
-						<Tooltip content="Comment" showArrow>
-							<Image
-								src="/icons/edit.svg"
-								alt="upload icon"
-								width={40}
-								height={40}
-								className="w-4 h-4 cursor-pointer"
-							/>
-						</Tooltip>
+						<UploadModal />
+
+						<Image
+							src="/icons/edit.svg"
+							alt="upload icon"
+							width={40}
+							height={40}
+							className="w-4 h-4 cursor-pointer"
+						/>
 					</div>
 				);
 			default:
@@ -231,7 +246,7 @@ export default function PatientTable() {
 								closeOnSelect={false}
 								selectedKeys={statusFilter}
 								selectionMode="multiple"
-								onSelectionChange={(selectedKeys:any) => setStatusFilter(selectedKeys)}
+								onSelectionChange={(selectedKeys: any) => setStatusFilter(selectedKeys)}
 
 							>
 								{statusOptions.map((status) => (
@@ -256,7 +271,7 @@ export default function PatientTable() {
 								closeOnSelect={false}
 								selectedKeys={visibleColumns}
 								selectionMode="multiple"
-								onSelectionChange={(selectedKeys:any) => setVisibleColumns(selectedKeys)}
+								onSelectionChange={(selectedKeys: any) => setVisibleColumns(selectedKeys)}
 							>
 								{columns.map((column) => (
 									<DropdownItem key={column.uid} className="capitalize">
@@ -335,7 +350,7 @@ export default function PatientTable() {
 			sortDescriptor={sortDescriptor}
 			topContent={topContent}
 			topContentPlacement="outside"
-			onSelectionChange={(selectedKeys:any) => setSelectedKeys(selectedKeys)}
+			onSelectionChange={(selectedKeys: any) => setSelectedKeys(selectedKeys)}
 			onSortChange={setSortDescriptor}
 		>
 			<TableHeader columns={headerColumns}>

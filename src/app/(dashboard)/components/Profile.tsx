@@ -9,8 +9,10 @@ import {
     Avatar,
     User,
 } from "@nextui-org/react";
+import { useAuth } from "@/app/contexts/AuthContext";
 
 export default function Profile() {
+    const {logout} = useAuth()
     return (
         <Dropdown placement="bottom-end">
             <DropdownTrigger>
@@ -32,7 +34,7 @@ export default function Profile() {
                 <DropdownItem key="system">System</DropdownItem>
                 <DropdownItem key="configurations">Configurations</DropdownItem>
                 <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-                <DropdownItem key="logout" color="primary">
+                <DropdownItem key="logout" color="primary" onPress={logout}>
                     Log Out
                 </DropdownItem>
             </DropdownMenu>

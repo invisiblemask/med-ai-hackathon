@@ -19,6 +19,7 @@ type authContextType = {
   register: (data: { email: string; password: string, name: string }) => any;
   logout: () => void;
   isLoading: boolean | undefined;
+  token: string | null
 };
 
 const authContextDefaultValues: authContextType = {
@@ -29,6 +30,7 @@ const authContextDefaultValues: authContextType = {
   register: () => { },
   logout: () => { },
   isLoading: false,
+  token: null
 };
 
 const AuthContext = createContext<authContextType>(authContextDefaultValues);
@@ -45,25 +47,26 @@ type Props = {
 export function AuthProvider({ children }: Props) {
   const router = useRouter();
   const [user, setUser] = useState<{ [key: string]: any } | null>(null);
+  const [token,setToken] = useState<string>("")
   const [isLoading, setisLoading] = useState<boolean | undefined>(false);
 
-  // useEffect(() => {
-  //   const checkIfUserExists = () => {
-  //     const res = localStorage.getItem("user");
-  //     console.log(res)
+  useEffect(() => {
+    const checkIfUserExists = () => {
+      const res = localStorage.getItem("user");
 
-  //     if (res !== null && res.length > 0) {
+      if (res !== null && res.length > 0) {
 
-  //       const val = JSON.parse(res)
-  //       setUser(val.user)
-  //     } else {
-  //       setUser(null);
-  //     }
+        const val = JSON.parse(res)
+        setUser(val)
+      } else {
+        setUser(null);
+      }
 
-  //   };
+    };
 
-  //   return checkIfUserExists();
-  // }, []);
+    return checkIfUserExists();
+  }, []);
+
 
   const register = async (data: { email: string; password: string, name: string }) => {
     setisLoading(true);
@@ -72,7 +75,10 @@ export function AuthProvider({ children }: Props) {
         url: "auth/user/register",
         req: { ...data },
       });
-      saveLocally(res.data)
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("token", JSON.stringify(res.data.token));
+      setUser(res.data.user);
+      setToken(res.data.token);
       return {
         message: res.data.message,
         status: res.status,
@@ -96,7 +102,10 @@ export function AuthProvider({ children }: Props) {
         url: "auth/user/login",
         req: { ...data },
       });
-      saveLocally(res.data)
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("token", JSON.stringify(res.data.token));
+      setUser(res.data.user);
+      setToken(res.data.token);
       return {
         message: res.data.message,
         status: res.status,
@@ -187,6 +196,7 @@ export function AuthProvider({ children }: Props) {
     register,
     logout,
     isLoading,
+    token
   };
   return (
     <>

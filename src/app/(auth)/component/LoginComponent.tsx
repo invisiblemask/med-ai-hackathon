@@ -1,15 +1,15 @@
 "use client";
 
-import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Input } from "@nextui-org/react";
 import Image from "next/image";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Controller, useForm, SubmitHandler } from "react-hook-form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { toast } from "sonner";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
 
 const schema = yup.object().shape({
     email: yup.string().required("Email is required").email(),

@@ -12,9 +12,33 @@ export const links = [
     activeIcon: "/icons/worklist-primary.svg"
   },
   {
-    name: "Upload",
-    href: "/upload",
-    icon: "/icons/upload.svg",
+    name: "Billing",
+    href: "#",
+    icon: "/icons/bill-list.svg",
     activeIcon: "/icons/upload-primary.svg"
   }
 ];
+
+
+export const cards = [
+  {
+    title: "Total Studies",
+    icon: "/icons/studies.svg",
+    value: "0"
+  },
+  {
+    title: "Reported studies",
+    icon: "/icons/reported.svg",
+    value: "0"
+  },
+  {
+    title: "Modalities",
+    icon: "/icons/modalities.svg",
+    value: "0"
+  },
+  {
+    title: "TAT",
+    icon: "/icons/tat.svg",
+    value: "0"
+  },
+]

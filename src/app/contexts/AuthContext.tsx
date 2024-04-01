@@ -8,13 +8,13 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import { authPost, post } from "../../../backend_services/api_services";
+import { authPost, authUpdate, post } from "../../../backend_services/api_services";
 import React from "react";
 
 type authContextType = {
   user: { [key: string]: any } | null;
   login: (data: { email: string; password: string }) => any;
-  updateAddress: (data: { address: string;}) => any;
+  updateName: (data: { name: string;}) => any;
   walletLogin: (data: { address: string;}) => any;
   register: (data: { email: string; password: string, name: string }) => any;
   logout: () => void;
@@ -24,7 +24,7 @@ type authContextType = {
 const authContextDefaultValues: authContextType = {
   user: null,
   login: () => { },
-  updateAddress: () => { },
+  updateName: () => { },
   walletLogin: () => { },
   register: () => { },
   logout: () => { },
@@ -72,9 +72,7 @@ export function AuthProvider({ children }: Props) {
         url: "auth/user/register",
         req: { ...data },
       });
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("token", JSON.stringify(res.data.token));
-      setUser(res.data.user);
+      saveLocally(res.data)
       return {
         message: res.data.message,
         status: res.status,
@@ -98,9 +96,7 @@ export function AuthProvider({ children }: Props) {
         url: "auth/user/login",
         req: { ...data },
       });
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("token", JSON.stringify(res.data.token));
-      setUser(res.data.user);
+      saveLocally(res.data)
       return {
         message: res.data.message,
         status: res.status,
@@ -120,14 +116,17 @@ export function AuthProvider({ children }: Props) {
 
   const walletLogin = async (data: { address: string;}) => {
     // setisLoading(true);
-    console.log("this")
     try {
       const res: any = await post({
         url: "auth/user/wallet-login",
         req: { ...data },
       });
-
-      console.log(res)
+      saveLocally(res.data)
+      return {
+        user: res.data.user,
+        message: res.data.message,
+        status: res.status,
+      };
 
       
     } catch (error: any) {
@@ -141,13 +140,18 @@ export function AuthProvider({ children }: Props) {
     }
   };
 
-  const updateAddress = async (data: { address: string;}) => {
+  const updateName = async (data: { name: string;}) => {
     setisLoading(true);
     try {
-      const res: any = await post({
+      const res: any = await authUpdate({
         url: "auth/user/wallet-update",
         req: { ...data },
       });
+      saveLocally(res.data)
+      return {
+        message: res.data.message,
+        status: res.status,
+      };
       
     } catch (error: any) {
       return {
@@ -160,6 +164,15 @@ export function AuthProvider({ children }: Props) {
     }
   };
 
+  const saveLocally = (data: any) => {
+    if(data.user){
+      localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
+    }
+      localStorage.setItem("token", JSON.stringify(data.token));
+      
+  }
+
   const logout = () => {
     router.push("/");
     setUser(null);
@@ -169,7 +182,7 @@ export function AuthProvider({ children }: Props) {
   const value = {
     user,
     login,
-    updateAddress,
+    updateName,
     walletLogin,
     register,
     logout,

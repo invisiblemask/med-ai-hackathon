@@ -28,7 +28,9 @@ export const post = (payload: any) => {
   });
 };
 
-export const update = (payload: any) => {
+export const authUpdate = (payload: any) => {
+  var token = validateToken();
+  $http.defaults.headers.common["authorization"] = "bearer " + token;
 
   return new Promise((resolve, reject) => {
     $http
@@ -58,13 +60,28 @@ export const authPost = (payload: any) => {
   });
 };
 
+export const authGet = (payload: any) => {
+  var token = validateToken();
+  $http.defaults.headers.common["authorization"] = "bearer " + token;
+
+  return new Promise((resolve, reject) => {
+    $http
+      .get(payload.url, payload.req)
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 const validateToken = () => {
   let val = null;
 
-  let storeVal = localStorage.getItem("user");
+  let storeVal = localStorage.getItem("token");
   if (storeVal !== null) {
-    let storeObj = JSON.parse(storeVal);
-    val = storeObj.res.token;
+    val = JSON.parse(storeVal);
   }
   return val;
 };

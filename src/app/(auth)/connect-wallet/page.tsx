@@ -14,7 +14,7 @@ export default function page() {
   const router = useRouter();
   const [account, setAccount] = useState<any>();
   const { sdk, connected } = useSDK();
-  const {walletLogin, updateAddress} = useAuth()
+  const {walletLogin} = useAuth()
 
   const connect = async () => {
     try {
@@ -30,9 +30,8 @@ useEffect(()=>{
   if(connected){
     connect()
     if(account) {
-      const data = {address: account}
-      const check = walletLogin(data)
-      if (check){
+      const {user, status} = walletLogin({address: account})
+      if (user && status === 201 ){
         router.push("/dashboard")
       } else {
         router.push("/update-user")
@@ -41,7 +40,6 @@ useEffect(()=>{
   }
 }, [account, connected])
 
-  console.log(account, connected)
   return (
     <div className="flex flex-col lg:flex-row m-4">
       <div className="bg-primary rounded-[20px] min-h-screen w-full lg:flex flex-col hidden items-center justify-center flex-1 gap-5">

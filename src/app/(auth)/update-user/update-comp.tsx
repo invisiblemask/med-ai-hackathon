@@ -80,7 +80,7 @@ export const UpdateComp = () => {
                 isLoading={isLoading}
                 color="primary"
                 spinnerPlacement="end">
-                {isLoading ? "Wait a minute" : "Sign in"}
+                {isLoading ? "Wait a minute" : "Update"}
             </Button>
         </form>
     </div>

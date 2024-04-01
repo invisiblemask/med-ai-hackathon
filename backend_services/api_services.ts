@@ -28,7 +28,9 @@ export const post = (payload: any) => {
   });
 };
 
-export const update = (payload: any) => {
+export const authUpdate = (payload: any) => {
+  var token = validateToken();
+  $http.defaults.headers.common["authorization"] = "bearer " + token;
 
   return new Promise((resolve, reject) => {
     $http

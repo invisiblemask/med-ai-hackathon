@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import { authPost, post } from "../../../backend_services/api_services";
+import { authPost, authUpdate, post } from "../../../backend_services/api_services";
 import React from "react";
 
 type authContextType = {
@@ -143,7 +143,7 @@ export function AuthProvider({ children }: Props) {
   const updateName = async (data: { name: string;}) => {
     setisLoading(true);
     try {
-      const res: any = await authPost({
+      const res: any = await authUpdate({
         url: "auth/user/wallet-update",
         req: { ...data },
       });
